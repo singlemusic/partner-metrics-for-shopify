@@ -6,9 +6,6 @@ RUN apt-get update -qq && apt-get install -y \
     nodejs \
     curl
 
-# for postgres
-RUN apt-get install -y
-
 ENV APP_HOME /metrics
 RUN mkdir ${APP_HOME}
 WORKDIR ${APP_HOME}
