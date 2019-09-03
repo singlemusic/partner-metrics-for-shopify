@@ -21,11 +21,10 @@ class PaymentHistory < ActiveRecord::Base
       end
       PaymentHistory.where("payment_date > ?", last_calculated_metric_date).delete_all
       key_mappings = {
-        shop: :shop,
-        charge_creation_time: :payment_date,
+        shop_domain: :shop,
+        date: :payment_date,
         partner_share: :revenue,
         charge_type: :charge_type,
-        app_title: :app_title,
         shop_country: :shop_country
       }
       options = {key_mapping: key_mappings, remove_unmapped_keys: true, chunk_size: 1000}
@@ -33,12 +32,12 @@ class PaymentHistory < ActiveRecord::Base
       c = SmarterCSV.process(csv_file.path, options) do |chunk_of_rows|
         chunk_of_rows.each do |row|
           if Date.parse(row[:payment_date]) > ( last_calculated_metric_date )
-            row[:app_title] = "Unknown" if row[:app_title].blank?
+            row[:app_title] = "Single Music" if row[:app_title].blank?
             row[:charge_type] =
             case row[:charge_type]
             when "RecurringApplicationFee", "Recurring application fee"
                 "recurring_revenue"
-            when "OneTimeApplicationFee", "ThemePurchaseFee", "One time application fee", "Theme purchase fee"
+            when "OneTimeApplicationFee", "ThemePurchaseFee", "One time application fee", "Theme purchase fee", "Usage application fee"
                 "onetime_revenue"
             when "AffiliateFee", "Affiliate fee"
                 "affiliate_revenue"

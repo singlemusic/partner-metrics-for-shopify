@@ -1,0 +1,19 @@
+version: '3.7'
+
+volumes:
+  metrics-db:
+
+services:
+  metrics-db:
+    image: postgres:9.4.1
+    environment:
+      - POSTGRES_PASSWORD=admin
+    volumes:
+      - "metrics-db:/var/lib/postgresql/data"
+    ports:
+      - "6432:5432"
+  
+  shopify-partner-metrics:
+    build: .
+    ports: 
+      - "5661:5000"
